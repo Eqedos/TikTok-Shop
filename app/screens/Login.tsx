@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Button, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 
@@ -36,54 +36,95 @@ const Login = () => {
   };
   
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Login</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                onChangeText={text => setEmail(text)}
-                value={email}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Password"
-                secureTextEntry
-                onChangeText={text => setPassword(text)}
-                value={password}
-            />
-            {loading ? (
-                <ActivityIndicator size="large" color="#0000ff" />
-            ) : (
-                <>
-                    <Button title="Sign In" onPress={signIn} />
-                    <Button title="Sign Up" onPress={signUp} />
-                </>
-            )}
-        </View>
-    );
+  return (
+    <View style={styles.container}>
+        <Text style={styles.title}>Login</Text>
+        <TextInput
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor="#aaa"
+            onChangeText={text => setEmail(text)}
+            value={email}
+        />
+        <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor="#aaa"
+            secureTextEntry
+            onChangeText={text => setPassword(text)}
+            value={password}
+        />
+        {loading ? (
+            <ActivityIndicator size="large" color="#fff" />
+        ) : (
+          <>
+          <TouchableOpacity style={styles.button} onPress={signIn}>
+              <Text style={styles.buttonText}>Sign In</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, styles.buttonOutline]} onPress={signUp}>
+              <Text style={styles.buttonTextOutline}>Sign Up</Text>
+          </TouchableOpacity>
+      </>
+        )}
+    </View>
+);
 }
 
 export default Login;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        justifyContent: 'center',
-        backgroundColor: '#f5f5f5',
+  container: {
+      flex: 1,
+      padding: 20,
+      justifyContent: 'center',
+      backgroundColor: '#000',
+  },
+  title: {
+      fontSize: 28,
+      marginBottom: 30,
+      textAlign: 'center',
+      color: '#fff',
+  },
+  input: {
+      height: 50,
+      borderColor: '#333',
+      borderWidth: 1,
+      marginBottom: 15,
+      paddingHorizontal: 15,
+      color: '#fff',
+      borderRadius: 5,
+      backgroundColor: 'rgba(255,255,255,0.1)',
+  },
+  button: {
+    marginVertical: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 25,
+    backgroundColor: '#fff',
+    shadowColor: "#000",
+    shadowOffset: {
+        width: 0,
+        height: 2,
     },
-    title: {
-        fontSize: 24,
-        marginBottom: 20,
-        textAlign: 'center',
-    },
-    input: {
-        height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
-        marginBottom: 10,
-        paddingHorizontal: 10,
-        backgroundColor: '#fff',
-    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+},
+buttonText: {
+    color: "#000",
+    fontSize: 16,
+    fontWeight: 'bold'
+},
+buttonOutline: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#fff',
+},
+buttonTextOutline: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: 'bold'
+},
 });
