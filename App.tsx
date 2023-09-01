@@ -37,7 +37,7 @@ export default function App() {
       <NavigationContainer>
           {user ? (
               <InsideStack.Navigator initialRouteName="products">
-                  <InsideStack.Screen name="products" component={Products} />
+                  <InsideStack.Screen name="products" component={Products} options={{ headerShown: false }}/>
               </InsideStack.Navigator>
           ) : (
               <Stack.Navigator initialRouteName="Login">
