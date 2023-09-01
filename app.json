@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "TikTok",
-    "slug": "TikTok",
+    "name": "TikTokShop",
+    "slug": "TikTokShop",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
