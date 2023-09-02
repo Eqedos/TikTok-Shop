@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, SafeAreaView } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
@@ -39,17 +39,23 @@ const TikTok = () => {
 
 const ProductInfo: React.FC = () => {
   const route = useRoute<ProductInfoRouteProp>();
-  const { productName } = route.params;
+  // Removed the const for productName as it's not used anymore.
 
   return (
-    <View style={{ flex: 1 }}>
-      <Text style={{ padding: 16, fontSize: 24 }}>{productName}</Text>
-      <Tab.Navigator>
+    <SafeAreaView style={{ flex: 1 }}>
+      <Tab.Navigator
+        screenOptions={{
+          tabBarActiveTintColor: 'tomato',
+          tabBarInactiveTintColor: 'gray',
+          tabBarLabelStyle: { fontSize: 12 },
+          tabBarStyle: { backgroundColor: '#e6e6e6' },
+        }}
+      >
         <Tab.Screen name="Details" component={ProductDetails} />
         <Tab.Screen name="Reviews" component={Reviews} />
         <Tab.Screen name="TikTok" component={TikTok} />
       </Tab.Navigator>
-    </View>
+    </SafeAreaView>
   );
 }
 
