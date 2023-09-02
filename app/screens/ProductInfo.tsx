@@ -6,12 +6,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import ProductDetails from './ProductTabs/ProductDetails';
 import Reviews from './ProductTabs/Reviews';
 import TikTok from './ProductTabs/TikTok';
-
-type RootStackParamList = {
-  Login: undefined;
-  Products: undefined;
-  ProductInfo: { productName: string };
-};
+import { RootStackParamList } from '../../App';
 
 type ProductInfoRouteProp = RouteProp<RootStackParamList, 'ProductInfo'>;
 

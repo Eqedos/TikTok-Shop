@@ -4,12 +4,7 @@ import { signOut } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
 import { useNavigation } from '@react-navigation/native'; 
 import { StackNavigationProp } from '@react-navigation/stack'; // Import this for typing
-
-type RootStackParamList = {
-    Login: undefined;
-    Products: undefined;
-    ProductInfo: { productName: string };
-  };
+import { RootStackParamList } from '../../App';
   
   type ProductsNavigationProp = StackNavigationProp<RootStackParamList, 'Products'>;
   

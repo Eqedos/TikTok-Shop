@@ -1,15 +1,19 @@
-// In ProductDetails.tsx
-
 import React from 'react';
 import { View, Text, Button } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { ref, set } from "firebase/database";
 import { FIREBASE_DB } from '../../../FirebaseConfig';
+import { RootStackParamList } from '../../../App';
 
 interface ProductDetailsProps {
   productName: string;
 }
 
+type ProductDetailsNavigationProp = StackNavigationProp<RootStackParamList, 'ProductDetailsForm'>;
+
 const ProductDetails: React.FC<ProductDetailsProps> = ({ productName }) => {
+  const navigation = useNavigation<ProductDetailsNavigationProp>();
 
   const addProductDetails = async () => {
     const productData = {
@@ -25,7 +29,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productName }) => {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text>Product Details Screen</Text>
-      <Button title="Add Product Details" onPress={addProductDetails} />
+      <Button title="Add Product Details" onPress={() => navigation.navigate('ProductDetailsForm', { productName })} />
     </View>
   );
 }
