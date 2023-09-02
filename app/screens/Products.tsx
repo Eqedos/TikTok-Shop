@@ -2,11 +2,21 @@ import React from 'react';
 import { View, Text, Button, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { signOut } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
+import { useNavigation } from '@react-navigation/native'; 
+import { StackNavigationProp } from '@react-navigation/stack'; // Import this for typing
 
+type RootStackParamList = {
+    Login: undefined;
+    Products: undefined;
+    ProductInfo: { productName: string };
+  };
+  
+  type ProductsNavigationProp = StackNavigationProp<RootStackParamList, 'Products'>;
+  
 
 const Products = () => {
-    const navigation = useNavigation()
+    const navigation = useNavigation<ProductsNavigationProp>(); // Use typing here
+
 
     const handleSignOut = async () => {
         try {
@@ -19,19 +29,23 @@ const Products = () => {
 
     return (
         <View style={styles.container}>
-            <ScrollView contentContainerStyle={styles.content}>
-                <View style={styles.row}>
-                    {Array(6).fill(null).map((_, index) => (
-                        <Pressable key={index} style={({ pressed }) => [styles.card, pressed ? styles.pressedCard : {}]}>
-                            <Text style={styles.cardTitle}>{"Product " + (index + 1)}</Text>
-                        </Pressable>
-                    ))}
-                </View>
-            </ScrollView>
-            <Button title="Sign Out" onPress={handleSignOut} color="#FE2C55" />
+          <ScrollView contentContainerStyle={styles.content}>
+            <View style={styles.row}>
+              {Array(6).fill(null).map((_, index) => (
+                <Pressable 
+                  key={index} 
+                  style={({ pressed }) => [styles.card, pressed ? styles.pressedCard : {}]}
+                  onPress={() => navigation.navigate('ProductInfo', { productName: `Product ${index + 1}` })}  // Add this line
+                >
+                  <Text style={styles.cardTitle}>{"Product " + (index + 1)}</Text>
+                </Pressable>
+              ))}
+            </View>
+          </ScrollView>
+          <Button title="Sign Out" onPress={handleSignOut} color="#FE2C55" />
         </View>
-    );
-}
+      );
+    }
 
 const styles = StyleSheet.create({
     container: {

@@ -2,38 +2,47 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+type RootStackParamList = {
+  Login: undefined;
+  Products: undefined;
+  ProductInfo: { productName: string };
+};
+
+type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const auth = FIREBASE_AUTH;
+    
+    const navigation = useNavigation<LoginScreenNavigationProp>();
 
     const signIn = async () => {
-      setLoading(true);
-      try {
-          await signInWithEmailAndPassword(FIREBASE_AUTH,email, password);
-          console.log('Successfully signed in');
-          // Navigate to another screen or update state here if needed
-      } catch (error) {
-          console.error('Error signing in:', error);
-          // Handle errors (e.g., show an error message to the user) here if needed
-      }
-      setLoading(false);
-  };
-  
-  const signUp = async () => {
-      setLoading(true);
-      try {
-          await createUserWithEmailAndPassword(FIREBASE_AUTH,email, password);
-          console.log('Successfully signed up');
-          // Navigate to another screen or update state here if needed
-      } catch (error) {
-          console.error('Error signing up:', error);
-          // Handle errors (e.g., show an error message to the user) here if needed
-      }
-      setLoading(false);
-  };
+        setLoading(true);
+        try {
+            await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
+            console.log('Successfully signed in');
+            navigation.navigate('Products'); // Navigate to Products screen
+        } catch (error) {
+            console.error('Error signing in:', error);
+        }
+        setLoading(false);
+    };
+    
+    const signUp = async () => {
+        setLoading(true);
+        try {
+            await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
+            console.log('Successfully signed up');
+            navigation.navigate('Products'); // Navigate to Products screen
+        } catch (error) {
+            console.error('Error signing up:', error);
+        }
+        setLoading(false);
+    };
   
 
   return (
