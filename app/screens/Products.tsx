@@ -35,7 +35,7 @@ const Products = () => {
                 <Pressable 
                   key={index} 
                   style={({ pressed }) => [styles.card, pressed ? styles.pressedCard : {}]}
-                  onPress={() => navigation.navigate('ProductInfo', { productName: `Product ${index + 1}` })}  // Add this line
+                  onPress={() => navigation.navigate('ProductInfo', { productName: `product${index + 1}` })}  // Add this line
                 >
                   <Text style={styles.cardTitle}>{"Product " + (index + 1)}</Text>
                 </Pressable>

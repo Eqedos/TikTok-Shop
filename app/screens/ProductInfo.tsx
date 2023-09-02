@@ -1,7 +1,11 @@
 import React from 'react';
-import { View, Text, SafeAreaView } from 'react-native';
+import { SafeAreaView } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+
+import ProductDetails from './ProductTabs/ProductDetails';
+import Reviews from './ProductTabs/Reviews';
+import TikTok from './ProductTabs/TikTok';
 
 type RootStackParamList = {
   Login: undefined;
@@ -13,33 +17,9 @@ type ProductInfoRouteProp = RouteProp<RootStackParamList, 'ProductInfo'>;
 
 const Tab = createMaterialTopTabNavigator();
 
-const ProductDetails = () => {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Product Details Screen</Text>
-    </View>
-  );
-}
-
-const Reviews = () => {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Reviews Screen</Text>
-    </View>
-  );
-}
-
-const TikTok = () => {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>TikTok Screen</Text>
-    </View>
-  );
-}
-
 const ProductInfo: React.FC = () => {
   const route = useRoute<ProductInfoRouteProp>();
-  // Removed the const for productName as it's not used anymore.
+  const { productName } = route.params;
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -51,9 +31,18 @@ const ProductInfo: React.FC = () => {
           tabBarStyle: { backgroundColor: '#e6e6e6' },
         }}
       >
-        <Tab.Screen name="Details" component={ProductDetails} />
-        <Tab.Screen name="Reviews" component={Reviews} />
-        <Tab.Screen name="TikTok" component={TikTok} />
+        <Tab.Screen 
+          name="Details" 
+          children={() => <ProductDetails productName={productName} />}
+        />
+        <Tab.Screen 
+          name="Reviews" 
+          children={() => <Reviews productName={productName} />}
+        />
+        <Tab.Screen 
+          name="TikTok" 
+          children={() => <TikTok productName={productName} />}
+        />
       </Tab.Navigator>
     </SafeAreaView>
   );
