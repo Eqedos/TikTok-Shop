@@ -12,7 +12,6 @@ import { RootStackParamList } from '../../App';
 const Products = () => {
     const navigation = useNavigation<ProductsNavigationProp>(); // Use typing here
 
-
     const handleSignOut = async () => {
         try {
             await signOut(FIREBASE_AUTH);

@@ -9,6 +9,8 @@ import Products from './app/screens/Products';
 import ProductInfo from './app/screens/ProductInfo'; // Make sure to create this component and import it here
 import { FIREBASE_AUTH } from './FirebaseConfig';
 import TikTokForm from './app/screens/ProductTabs/TikTokForm';
+import ReviewForm from './app/screens/ProductTabs/ReviewForm'; 
+
 
 export type RootStackParamList = {
     Login: undefined;
@@ -16,6 +18,7 @@ export type RootStackParamList = {
     ProductInfo: { productName: string };
     ProductDetailsForm: { productName?: string };
     TikTokForm: { productName?: string };  // added this line
+    ReviewForm: { productName: string };
 };
 
 
@@ -54,6 +57,7 @@ export default function App() {
                 <Stack.Screen name="ProductInfo" component={ProductInfo} options={{ headerShown: false }}/>
                 <Stack.Screen name="ProductDetailsForm" component={ProductDetailsForm} options={{ headerShown: false }}/>
                 <Stack.Screen name="TikTokForm" component={TikTokForm} options={{ headerShown: false }}/>
+                <Stack.Screen name="ReviewForm" component={ReviewForm} options={{ headerShown: false }}/>
             </React.Fragment>
         ) : null}
     </Stack.Navigator>

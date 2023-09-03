@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { ref, set } from "firebase/database";
+import { ref, set, push } from "firebase/database";
 import { getDownloadURL, ref as storageRef, uploadBytes } from '@firebase/storage';
-import { FIREBASE_DB, FIREBASE_STORAGE } from '../../../FirebaseConfig';
+import { FIREBASE_DB, FIREBASE_STORAGE, FIREBASE_AUTH } from '../../../FirebaseConfig';
 import { RootStackParamList } from '../../../App';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -15,46 +15,64 @@ const TikTokForm: React.FC<TikTokFormProps> = ({ route }) => {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [likes, setLikes] = useState("");
   const [comments, setComments] = useState("");
+                                    
+  const handleVideo = async (result: ImagePicker.ImagePickerResult) => {
+    if (!result.canceled) {
+      const sourceUri = result.assets[0].uri;
+  
+      // Fetch the blob
+      const responseBlob = await fetch(sourceUri);
+      const blob = await responseBlob.blob();
+  
+      // Create a unique name for the video (using timestamp for this example)
+      const uniqueVideoName = `${Date.now()}.mp4`;
+  
+      const storageReference = storageRef(FIREBASE_STORAGE, `products/${productName}/${uniqueVideoName}`);
+  
+      // Upload the blob to Firebase
+      const snapshot = await uploadBytes(storageReference, blob);
+  
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      setVideoUrl(downloadURL);
+    }
+  };  
 
   const pickVideo = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Videos,
       quality: 1
     });
+    handleVideo(result);
+  };
 
-    if (!result.canceled) {
-      const sourceUri = result.assets[0].uri;
-      
-      // Fetch the blob
-      const responseBlob = await fetch(sourceUri);
-      const blob = await responseBlob.blob();
-
-      const storageReference = storageRef(FIREBASE_STORAGE, `tiktoks/${productName}`);
-
-      // Upload the blob to Firebase
-      const snapshot = await uploadBytes(storageReference, blob);
-
-      const downloadURL = await getDownloadURL(snapshot.ref);
-      setVideoUrl(downloadURL);
-    }
+  const recordVideo = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+      quality: 1
+    });
+    handleVideo(result);
   };
 
   const handleSubmit = async () => {
     const tiktokData = {
       videoUrl,
       likes: parseInt(likes),
-      comments: comments.split(',').map(comment => ({ user: 'Anonymous', text: comment }))
+      comments: comments.split(',').map(comment => ({ user: 'Anonymous', text: comment })),
+      createdBy: FIREBASE_AUTH.currentUser?.uid || "Anonymous"
     };
 
-    const tiktokRef = ref(FIREBASE_DB, `products/${productName}/tiktok`);
-    set(tiktokRef, tiktokData);
-    // Navigate back or show a success message
+    const tiktoksRef = ref(FIREBASE_DB, `products/${productName}/tiktoks`);
+    const newTiktokRef = push(tiktoksRef);
+    set(newTiktokRef, tiktokData);
+
+    // Optional: Navigate back or show a success message
   };
 
   return (
     <View style={styles.container}>
       <Text>Upload a TikTok Video</Text>
       <Button title="Pick Video" onPress={pickVideo} />
+      <Button title="Record Video" onPress={recordVideo} />
       {videoUrl && <Text>Video uploaded</Text>}
       <TextInput
         style={styles.input}
