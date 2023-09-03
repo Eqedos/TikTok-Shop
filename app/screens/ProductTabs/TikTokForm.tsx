@@ -13,29 +13,31 @@ const TikTokForm: React.FC<TikTokFormProps> = ({ route }) => {
   const { productName } = route.params;
 
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [uniqueVideoName, setUniqueVideoName] = useState<string | null>(null); 
   const [likes, setLikes] = useState("");
   const [comments, setComments] = useState("");
-                                    
+
   const handleVideo = async (result: ImagePicker.ImagePickerResult) => {
     if (!result.canceled) {
       const sourceUri = result.assets[0].uri;
-  
+
       // Fetch the blob
       const responseBlob = await fetch(sourceUri);
       const blob = await responseBlob.blob();
-  
+
       // Create a unique name for the video (using timestamp for this example)
-      const uniqueVideoName = `${Date.now()}.mp4`;
-  
-      const storageReference = storageRef(FIREBASE_STORAGE, `products/${productName}/${uniqueVideoName}`);
-  
+      const generatedUniqueVideoName = `${Date.now()}.mp4`;
+      setUniqueVideoName(generatedUniqueVideoName); 
+
+      const storageReference = storageRef(FIREBASE_STORAGE, `products/${productName}/${generatedUniqueVideoName}`);
+
       // Upload the blob to Firebase
       const snapshot = await uploadBytes(storageReference, blob);
-  
+
       const downloadURL = await getDownloadURL(snapshot.ref);
       setVideoUrl(downloadURL);
     }
-  };  
+  };
 
   const pickVideo = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -56,6 +58,7 @@ const TikTokForm: React.FC<TikTokFormProps> = ({ route }) => {
   const handleSubmit = async () => {
     const tiktokData = {
       videoUrl,
+      uniqueVideoName, 
       likes: parseInt(likes),
       comments: comments.split(',').map(comment => ({ user: 'Anonymous', text: comment })),
       createdBy: FIREBASE_AUTH.currentUser?.uid || "Anonymous"
