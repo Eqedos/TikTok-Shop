@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet, Pressable, ScrollView } from 'react-native';
+import { View, Text, Button, StyleSheet, Pressable, ScrollView, Image } from 'react-native';
 import { signOut } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
 import { useNavigation } from '@react-navigation/native'; 
@@ -21,22 +21,34 @@ const Products = () => {
         }
     }
 
+    const productImages = [
+      require('../../assets/product1.jpeg'),
+      require('../../assets/product2.jpeg'),
+      require('../../assets/product3.jpeg'),
+      require('../../assets/product4.jpeg'),
+      require('../../assets/product5.jpeg'),
+      require('../../assets/product6.jpeg'),
+      require('../../assets/product7.jpeg'),
+      require('../../assets/product8.jpeg'),
+    ];
+
     return (
         <View style={styles.container}>
           <ScrollView contentContainerStyle={styles.content}>
             <View style={styles.row}>
-              {Array(6).fill(null).map((_, index) => (
+              {Array(8).fill(null).map((_, index) => (
                 <Pressable 
                   key={index} 
                   style={({ pressed }) => [styles.card, pressed ? styles.pressedCard : {}]}
                   onPress={() => navigation.navigate('ProductInfo', { productName: `product${index + 1}` })}  // Add this line
                 >
+                  <Image source={productImages[index]} style={styles.cardImage} />
                   <Text style={styles.cardTitle}>{"Product " + (index + 1)}</Text>
                 </Pressable>
               ))}
             </View>
           </ScrollView>
-          <Button title="Sign Out" onPress={handleSignOut} color="#FE2C55" />
+          <Button title="Sign Out" onPress={handleSignOut} color="#FF2043" />
         </View>
       );
     }
@@ -58,13 +70,13 @@ const styles = StyleSheet.create({
     },
     card: {
         width: '48%', // Adjusting width for two cards in a row
-        height: 120,
+        height: 200,
         backgroundColor: '#000',
         marginBottom: 20,
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        borderColor: '#FE2C55',
+        borderColor: '#808080',
         borderWidth: 1,
         shadowColor: "#FE2C55",
         shadowOffset: {
@@ -82,6 +94,11 @@ const styles = StyleSheet.create({
     cardTitle: {
         fontSize: 18,
         color: '#FFF',
+    },
+    cardImage: {
+      width: 100, // Adjust the width as needed
+      height: 100, // Adjust the height as needed
+      resizeMode: 'cover', // You can use 'cover', 'contain', or other resizeMode options
     },
 });
 

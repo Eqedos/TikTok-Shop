@@ -1,134 +1,172 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { FIREBASE_AUTH } from '../../FirebaseConfig';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../App';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  ActivityIndicator,
+  TouchableOpacity,
+  Image,
+} from "react-native";
+import { FIREBASE_AUTH } from "../../FirebaseConfig";
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../../App";
 
-type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
+type LoginScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Login"
+>;
 
 const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
-    
-    const navigation = useNavigation<LoginScreenNavigationProp>();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    const signIn = async () => {
-        setLoading(true);
-        try {
-            await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
-            console.log('Successfully signed in');
-            navigation.navigate('Products'); // Navigate to Products screen
-        } catch (error) {
-            console.error('Error signing in:', error);
-        }
-        setLoading(false);
-    };
-    
-    const signUp = async () => {
-        setLoading(true);
-        try {
-            await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
-            console.log('Successfully signed up');
-            navigation.navigate('Products'); // Navigate to Products screen
-        } catch (error) {
-            console.error('Error signing up:', error);
-        }
-        setLoading(false);
-    };
-  
+  const navigation = useNavigation<LoginScreenNavigationProp>();
+
+  const signIn = async () => {
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
+      console.log("Successfully signed in");
+      navigation.navigate("Products"); // Navigate to Products screen
+    } catch (error) {
+      console.error("Error signing in:", error);
+    }
+    setLoading(false);
+  };
+
+  const signUp = async () => {
+    setLoading(true);
+    try {
+      await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
+      console.log("Successfully signed up");
+      navigation.navigate("Products"); // Navigate to Products screen
+    } catch (error) {
+      console.error("Error signing up:", error);
+    }
+    setLoading(false);
+  };
 
   return (
     <View style={styles.container}>
-        <Text style={styles.title}>Login</Text>
-        <TextInput
-            style={styles.input}
-            placeholder="Email"
-            placeholderTextColor="#aaa"
-            onChangeText={text => setEmail(text)}
-            value={email}
+      {/* Logo */}
+      <View style={styles.logoContainer}>
+        <Image
+          source={require("../../assets/tiktok-shop-logo.png")}
+          style={styles.logo}
         />
-        <TextInput
-            style={styles.input}
-            placeholder="Password"
-            placeholderTextColor="#aaa"
-            secureTextEntry
-            onChangeText={text => setPassword(text)}
-            value={password}
-        />
-        {loading ? (
-            <ActivityIndicator size="large" color="#fff" />
-        ) : (
-          <>
+      </View>
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        placeholderTextColor="#aaa"
+        onChangeText={(text) => setEmail(text)}
+        value={email}
+      />
+      <TextInput
+        style={[styles.input, styles.inputWithMargin]}
+        placeholder="Password"
+        placeholderTextColor="#aaa"
+        secureTextEntry
+        onChangeText={(text) => setPassword(text)}
+        value={password}
+      />
+      {loading ? (
+        <ActivityIndicator size="large" color="#fff" />
+      ) : (
+        <>
           <TouchableOpacity style={styles.button} onPress={signIn}>
-              <Text style={styles.buttonText}>Sign In</Text>
+            <Text style={styles.buttonText}>Sign In</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, styles.buttonOutline]} onPress={signUp}>
-              <Text style={styles.buttonTextOutline}>Sign Up</Text>
+          <TouchableOpacity
+            style={[styles.button, styles.buttonOutline]}
+            onPress={signUp}
+          >
+            <Text style={styles.buttonTextOutline}>Sign Up</Text>
           </TouchableOpacity>
-      </>
-        )}
+        </>
+      )}
     </View>
-);
-}
+  );
+};
 
 export default Login;
 
 const styles = StyleSheet.create({
   container: {
-      flex: 1,
-      padding: 20,
-      justifyContent: 'center',
-      backgroundColor: '#000',
+    flex: 1,
+    padding: 20,
+    justifyContent: "center",
+    backgroundColor: "#000",
   },
   title: {
-      fontSize: 28,
-      marginBottom: 30,
-      textAlign: 'center',
-      color: '#fff',
+    fontSize: 28,
+    marginBottom: 0,
+    marginVertical: 10,
+    textAlign: "center",
+    color: "#fff",
   },
   input: {
-      height: 50,
-      borderColor: '#333',
-      borderWidth: 1,
-      marginBottom: 15,
-      paddingHorizontal: 15,
-      color: '#fff',
-      borderRadius: 5,
-      backgroundColor: 'rgba(255,255,255,0.1)',
+    height: 50,
+    borderColor: "#333",
+    borderWidth: 1,
+    marginBottom: 0,
+    marginVertical: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    color: "#fff",
+    borderRadius: 5,
+    backgroundColor: "rgba(255,255,255,0.1)",
+  },
+  inputWithMargin: {
+    marginBottom: 70, // Add more margin for the second TextInput
   },
   button: {
+    marginBottom: 0,
     marginVertical: 10,
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 25,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     shadowColor: "#000",
     shadowOffset: {
-        width: 0,
-        height: 2,
+      width: 0,
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-},
-buttonText: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  buttonText: {
     color: "#000",
     fontSize: 16,
-    fontWeight: 'bold'
-},
-buttonOutline: {
-    backgroundColor: 'transparent',
+    fontWeight: "bold",
+  },
+  buttonOutline: {
+    backgroundColor: "transparent",
     borderWidth: 1,
-    borderColor: '#fff',
-},
-buttonTextOutline: {
+    borderColor: "#fff",
+  },
+  buttonTextOutline: {
     color: "#fff",
     fontSize: 16,
-    fontWeight: 'bold'
-},
+    fontWeight: "bold",
+  },
+  logoContainer: {
+    marginBottom: 20, // Add spacing between the logo and text
+    alignItems: "center",
+  },
+  logo: {
+    width: 175, // Set the desired width of the logo
+    height: 175, // Set the desired height of the logo
+    resizeMode: "contain", // Adjust the resizeMode as needed
+  },
 });
