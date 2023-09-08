@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, FlatList, Modal, TouchableOpacity, TextInput } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, Text, Button, FlatList, Modal, TouchableOpacity, TextInput, Dimensions, ViewToken } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ref, onValue, set } from "firebase/database";
@@ -28,6 +28,10 @@ const TikTok: React.FC<TikTokProps> = ({ productName }) => {
   const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
   const [selectedVideoComments, setSelectedVideoComments] = useState<Array<{ user: string, text: string }>>([]);
   const [newComment, setNewComment] = useState<string>("");
+  const [isVideoPlaying, setIsVideoPlaying] = useState<boolean>(false);
+  const [visibleVideoIndex, setVisibleVideoIndex] = useState<number | null>(null);
+
+  const videoRef = useRef<Video>(null);
 
   useEffect(() => {
     const tiktoksRef = ref(FIREBASE_DB, `products/${productName}/tiktoks`);
@@ -74,6 +78,19 @@ const TikTok: React.FC<TikTokProps> = ({ productName }) => {
     setNewComment('');
   };
 
+  const handleVideoPress = (index: number) => {
+    setIsVideoPlaying(!isVideoPlaying);
+    setVisibleVideoIndex(index);
+  };
+
+  const onViewableItemsChanged = useRef((info: { viewableItems: ViewToken[] }) => {
+    if (info.viewableItems.length > 0) {
+      const visibleIndex = info.viewableItems[0].index;
+      setVisibleVideoIndex(visibleIndex);
+    }
+  }).current;
+  
+
   const renderCommentSection = () => (
     <Modal
       visible={showComments}
@@ -103,25 +120,31 @@ const TikTok: React.FC<TikTokProps> = ({ productName }) => {
       <FlatList
         data={tiktoks}
         renderItem={({ item, index }) => (
-          <View style={{ marginVertical: 10 }}>
-            <Video 
-              source={{ uri: item.videoUrl }}
-              style={{ width: '100%', height: 300 }}
-              resizeMode={ResizeMode.CONTAIN}
-              useNativeControls={true}
-            />
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10 }}>
-              <TouchableOpacity onPress={() => handleLike(index)}>
-                <Text>👍 {item.likes}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleCommentsClick(item.id, item.comments)}>
-                <Text>💬 {item.comments.length}</Text>
-              </TouchableOpacity>
-            </View>
+          <View style={{ flex: 1 }}>
+            <TouchableOpacity onPress={() => handleVideoPress(index)}>
+              <Video 
+                ref={videoRef}
+                source={{ uri: item.videoUrl }}
+                style={{ width: Dimensions.get('window').width, height: Dimensions.get('window').height }}
+                resizeMode={ResizeMode.CONTAIN}
+                shouldPlay={visibleVideoIndex === index && isVideoPlaying}
+                isLooping
+                useNativeControls={false}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleLike(index)}>
+              <Text>👍 {item.likes}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleCommentsClick(item.id, item.comments)}>
+              <Text>💬 {item.comments.length}</Text>
+            </TouchableOpacity>
           </View>
         )}
         keyExtractor={(item, index) => index.toString()}
+        onViewableItemsChanged={onViewableItemsChanged}
+        viewabilityConfig={{ viewAreaCoveragePercentThreshold: 50 }}
       />
+
       <Button title="Add TikTok" onPress={() => navigation.navigate('TikTokForm', { productName })} />
       {renderCommentSection()}
     </View>
