@@ -6,7 +6,33 @@ import { ref, onValue, set } from "firebase/database";
 import { FIREBASE_DB } from '../../../FirebaseConfig';
 import { RootStackParamList } from '../../../App';
 import { Video, ResizeMode } from 'expo-av';
+import { StyleSheet } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  videoContainer: {
+    position: 'relative',
+    width: '100%',
+    height: '100%',
+  },
+  overlayContainer: {
+    position: 'absolute',
+    top: '50%',
+    right: 0,
+    transform: [{ translateY: -50 }],
+    alignItems: 'flex-end',
+    paddingRight: 10,
+  },
+  likeButton: {
+    marginBottom: 10,
+  },
+  commentButton: {
+    marginBottom: 10,
+  },
+});
 interface TikTokProps {
   productName: string;
 }
@@ -120,7 +146,8 @@ const TikTok: React.FC<TikTokProps> = ({ productName }) => {
       <FlatList
         data={tiktoks}
         renderItem={({ item, index }) => (
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 1, overflow: 'hidden' }}>
+            <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'black', opacity: 1 }} />
             <TouchableOpacity onPress={() => handleVideoPress(index)}>
               <Video 
                 ref={videoRef}
@@ -132,20 +159,41 @@ const TikTok: React.FC<TikTokProps> = ({ productName }) => {
                 useNativeControls={false}
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleLike(index)}>
-              <Text>👍 {item.likes}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleCommentsClick(item.id, item.comments)}>
-              <Text>💬 {item.comments.length}</Text>
-            </TouchableOpacity>
+                  <View style={{ position: 'absolute', top: '50%', right: 0, transform: [{ translateY: -50 }] }}>
+                  <TouchableOpacity onPress={() => handleLike(index)} style={{ alignItems: 'center', padding: 5, borderRadius: 5, shadowColor: 'black', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 2, elevation: 2, borderWidth: 0, borderColor: 'transparent' }}>
+                    <FontAwesome name="heart" size={30} color="white" style={{ textShadowColor: 'black', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 1 }} />
+                    <Text style={{ color: 'white', backgroundColor: 'black', marginTop: 5, paddingHorizontal: 5, borderRadius: 5 }}>{item.likes}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => handleCommentsClick(item.id, item.comments)} style={{ alignItems: 'center', marginTop: 10, padding: 5, borderRadius: 5, shadowColor: 'black', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 2, elevation: 2, borderWidth: 0, borderColor: 'transparent' }}>
+                    <FontAwesome name="comment" size={30} color="white" style={{ textShadowColor: 'black', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 1 }} />
+                    <Text style={{ color: 'white', backgroundColor: 'black', marginTop: 5, paddingHorizontal: 5, borderRadius: 5 }}>{item.comments.length}</Text>
+                  </TouchableOpacity>
+      </View>
           </View>
         )}
         keyExtractor={(item, index) => index.toString()}
         onViewableItemsChanged={onViewableItemsChanged}
         viewabilityConfig={{ viewAreaCoveragePercentThreshold: 50 }}
+        snapToInterval={Dimensions.get('window').height}
+        decelerationRate="fast"
       />
-
-      <Button title="Add TikTok" onPress={() => navigation.navigate('TikTokForm', { productName })} />
+  
+  <TouchableOpacity
+        style={{
+          position: 'absolute',
+          top: 20,
+          right: 20,
+          width: 50,
+          height: 50,
+          borderRadius: 25,
+          backgroundColor: 'white',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+        onPress={() => navigation.navigate('TikTokForm', { productName })}
+      >
+        <FontAwesome name="plus" size={24} color="black" />
+      </TouchableOpacity>
       {renderCommentSection()}
     </View>
   );
