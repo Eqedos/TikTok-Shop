@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { View, Text, Button, StyleSheet, Pressable, FlatList, Image } from 'react-native';
 import { signOut } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
@@ -10,6 +10,9 @@ import { Ionicons } from '@expo/vector-icons';
 type ProductsNavigationProp = StackNavigationProp<RootStackParamList, 'Products'>;
 
 const Products = () => {
+  const cardIndexRef = useRef(0);
+  const cardHeightRef = useRef(0);
+
   const navigation = useNavigation<ProductsNavigationProp>();
 
   const handleSignOut = async () => {
@@ -74,18 +77,30 @@ const Products = () => {
   ];
   
 
-  const renderCard = ({ item }: { item: any }) => (
-    <Pressable
-      style={styles.card}
-      onPress={() => navigation.navigate('ProductInfo', { productName: item.name })}
-    >
-      <Image source={item.image} style={styles.cardImage} />
-      <Text style={styles.cardTitle}>{item.name}</Text>
-      <Text style={styles.cardPrice}>{item.price}</Text>
-      <Ionicons name="cart-outline" size={24} color="#FF2043" />
-    </Pressable>
-  );
+  const renderCard = ({ item, index }: { item: any, index: number }) => {
+    let cardWidth: string;
 
+    if (index % 2 === 0) { // If the card is on the left side
+      cardWidth = Math.floor(Math.random() * (60 - 35 + 1) + 35) + "%";
+      cardIndexRef.current = parseInt(cardWidth); // Store the width of the left card
+    } else { // If the card is on the right side
+      cardWidth = (95 - cardIndexRef.current) + "%"; // Subtracting left card width from total width
+    }
+    
+    return (
+      <Pressable
+        style={[styles.card, { width: cardWidth, marginRight: 10 }]}
+        onPress={() => navigation.navigate('ProductInfo', { productName: item.name })}
+      >
+
+        <Image source={item.image} style={styles.cardImage} />
+        <Text style={styles.cardTitle}>{item.name}</Text>
+        <Text style={styles.cardPrice}>{item.price}</Text>
+        <Ionicons name="cart-outline" size={24} color="#FF2043" />
+      </Pressable>
+    );
+  };
+  
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -134,8 +149,10 @@ const styles = StyleSheet.create({
   
   content: {
     paddingTop: 20,
-    paddingHorizontal: 10,
-  },
+    width: '95%',             // set the total width for the content
+    alignSelf: 'center',      // center the content horizontally
+},
+
   card: {
     width: '48%',
     backgroundColor: '#FFF',

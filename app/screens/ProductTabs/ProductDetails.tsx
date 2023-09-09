@@ -70,7 +70,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productName }) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.contentContainer}>
+      <ScrollView>
         <View style={styles.header}>
           <Text style={styles.title}>
             <Icon name="music" size={28} color="#fff" /> {productName}
@@ -133,6 +133,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productName }) => {
                   },
                 ],
               }}
+              yAxisSuffix=''
               width={200}
               height={200}
               yAxisLabel="$"
@@ -161,6 +162,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productName }) => {
                   },
                 ],
               }}
+              yAxisSuffix=''
               width={200}
               height={200}
               yAxisLabel="$"
@@ -194,6 +196,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productName }) => {
   width={200}
   height={200}
   yAxisLabel=""
+  yAxisSuffix=''
   chartConfig={{
     backgroundColor: '#000',
     backgroundGradientFrom: '#000',
@@ -219,6 +222,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productName }) => {
                   },
                 ],
               }}
+              yAxisSuffix=''
               width={200}
               height={200}
               yAxisLabel=""
@@ -250,7 +254,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productName }) => {
       <Button
         title="Edit Product Details"
         onPress={() => navigation.navigate('ProductDetailsForm', { productName })}
-        style={styles.button}
       />
     </View>
   );
