@@ -70,6 +70,7 @@ const ReviewForm: React.FC<ReviewFormProps> = (props) => {
         placeholder="Author"
         onChangeText={setAuthor}
         value={author}
+        required
       />
 
       <TextInput
@@ -79,6 +80,7 @@ const ReviewForm: React.FC<ReviewFormProps> = (props) => {
         numberOfLines={4}
         onChangeText={setText}
         value={text}
+        required
       />
 
       <View style={styles.ratingContainer}>

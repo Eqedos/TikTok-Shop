@@ -61,6 +61,17 @@ const TikTokForm: React.FC<TikTokFormProps> = ({ route }) => {
       return;
     }
 
+    if (!videoUrl) {
+      Alert.alert(
+        'No Video',
+        'Please upload or record a video before submitting.',
+        [
+          { text: 'OK', onPress: () => console.log('OK Pressed') }
+        ]
+      );
+      return;
+    }
+
     const commentsArray = commentsInput.split(',')
                                        .map(comment => comment.trim())
                                        .filter(comment => comment) // remove any empty strings after trimming
