@@ -1,105 +1,208 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet, Pressable, ScrollView, Image } from 'react-native';
+import { View, Text, Button, StyleSheet, Pressable, FlatList, Image } from 'react-native';
 import { signOut } from 'firebase/auth';
 import { FIREBASE_AUTH } from '../../FirebaseConfig';
 import { useNavigation } from '@react-navigation/native'; 
-import { StackNavigationProp } from '@react-navigation/stack'; // Import this for typing
+import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../App';
-  
-  type ProductsNavigationProp = StackNavigationProp<RootStackParamList, 'Products'>;
-  
+import { Ionicons } from '@expo/vector-icons';
+
+type ProductsNavigationProp = StackNavigationProp<RootStackParamList, 'Products'>;
 
 const Products = () => {
-    const navigation = useNavigation<ProductsNavigationProp>(); // Use typing here
+  const navigation = useNavigation<ProductsNavigationProp>();
 
-    const handleSignOut = async () => {
-        try {
-            await signOut(FIREBASE_AUTH);
-            console.log('User signed out!');
-        } catch (error) {
-            console.error('Error signing out:', error);
-        }
+  const handleSignOut = async () => {
+    try {
+      await signOut(FIREBASE_AUTH);
+      console.log('User signed out!');
+    } catch (error) {
+      console.error('Error signing out:', error);
     }
+  }
 
-    const productImages = [
-      require('../../assets/product1.jpeg'),
-      require('../../assets/product2.jpeg'),
-      require('../../assets/product3.jpeg'),
-      require('../../assets/product4.jpeg'),
-      require('../../assets/product5.jpeg'),
-      require('../../assets/product6.jpeg'),
-      require('../../assets/product7.jpeg'),
-      require('../../assets/product8.jpeg'),
-    ];
+  const productData = [
+    {
+      id: 1,
+      name: 'Camera',
+      price: '\$19.99',
+      image: require('../../assets/product1.jpeg'),
+    },
+    {
+      id: 2,
+      name: 'Watch',
+      price: '\$24.99',
+      image: require('../../assets/product2.jpeg'),
+    },
+    // Add more product data here...
+    {
+      id: 3,
+      name: 'FaceWash',
+      price: '\$14.99',
+      image: require('../../assets/product3.jpeg'),
+    },
+    {
+      id: 4,
+      name: 'T-Shirts',
+      price: '\$29.99',
+      image: require('../../assets/product4.jpeg'),
+    },
+    {
+      id: 5,
+      name: 'PremPens',
+      price: '\$9.99',
+      image: require('../../assets/product5.jpeg'),
+    },
+    {
+      id: 6,
+      name: 'NoteBooks',
+      price: '\$17.99',
+      image: require('../../assets/product6.jpeg'),
+    },
+    {
+      id: 7,
+      name: 'Cute Bear',
+      price: '\$12.99',
+      image: require('../../assets/product7.jpeg'),
+    },
+    {
+      id: 8,
+      name: 'Slay Cap',
+      price: '\$39.99',
+      image: require('../../assets/product8.jpeg'),
+    },
+  ];
+  
 
-    return (
-        <View style={styles.container}>
-          <ScrollView contentContainerStyle={styles.content}>
-            <View style={styles.row}>
-              {Array(8).fill(null).map((_, index) => (
-                <Pressable 
-                  key={index} 
-                  style={({ pressed }) => [styles.card, pressed ? styles.pressedCard : {}]}
-                  onPress={() => navigation.navigate('ProductInfo', { productName: `product${index + 1}` })}  // Add this line
-                >
-                  <Image source={productImages[index]} style={styles.cardImage} />
-                  <Text style={styles.cardTitle}>{"Product " + (index + 1)}</Text>
-                </Pressable>
-              ))}
-            </View>
-          </ScrollView>
-          <Button title="Sign Out" onPress={handleSignOut} color="#FF2043" />
-        </View>
-      );
-    }
+  const renderCard = ({ item }: { item: any }) => (
+    <Pressable
+      style={styles.card}
+      onPress={() => navigation.navigate('ProductInfo', { productName: item.name })}
+    >
+      <Image source={item.image} style={styles.cardImage} />
+      <Text style={styles.cardTitle}>{item.name}</Text>
+      <Text style={styles.cardPrice}>{item.price}</Text>
+      <Ionicons name="cart-outline" size={24} color="#FF2043" />
+    </Pressable>
+  );
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Image source={require('../../assets/tiktok-shop-logo2.png')} style={styles.logo} />
+      </View>
+      <FlatList
+        data={productData}
+        renderItem={renderCard}
+        keyExtractor={item => item.id.toString()}
+        numColumns={2}
+        contentContainerStyle={styles.content}
+      />
+      <View style={styles.footer}>
+        <Text style={styles.footerText}>© 2022 Your Ecommerce Website. All rights reserved.</Text>
+      </View>
+      <View style={styles.signOutButtonContainer}>
+        <Pressable style={styles.signOutButton} onPress={handleSignOut}>
+          <Ionicons name="log-out-outline" size={24} color="#FF2043" />
+        </Pressable>
+      </View>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#000',
+  container: {
+    flex: 1,
+    backgroundColor: '#FFF',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'center', // Center contents horizontally
+    alignItems: 'center',     // Center contents vertically
+    paddingHorizontal: 10,
+    paddingTop: 10,           // Increased paddingTop for taller header
+    paddingBottom: 10,       // Increased paddingBottom for taller header
+    borderBottomWidth: 1,
+    borderBottomColor: '#EAEAEA',
+  },
+  logo: {
+    width: 200,
+    height: 80,
+    resizeMode: 'contain',
+  },
+  
+  
+  content: {
+    paddingTop: 20,
+    paddingHorizontal: 10,
+  },
+  card: {
+    width: '48%',
+    backgroundColor: '#FFF',
+    marginBottom: 20,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: '#EAEAEA',
+    borderWidth: 1,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-    content: {
-        alignItems: 'center',
-        paddingTop: 20,
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  cardImage: {
+    width: '100%',
+    height: 150,
+    resizeMode: 'cover',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 10,
+    marginBottom: 5,
+    paddingHorizontal: 10,
+    textAlign: 'center',
+  },
+  cardPrice: {
+    fontSize: 14,
+    color: '#888',
+    marginBottom: 10,
+  },
+  footer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#EAEAEA',
+  },
+  footerText: {
+    fontSize: 12,
+    color: '#888',
+  },
+  signOutButtonContainer: {
+    position: 'absolute',
+    bottom: 10,
+    left: 10,
+  },
+  signOutButton: {
+    backgroundColor: '#FFF',
+    borderRadius: 50,
+    padding: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-    row: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between',
-        paddingHorizontal: 10,
-    },
-    card: {
-        width: '48%', // Adjusting width for two cards in a row
-        height: 200,
-        backgroundColor: '#000',
-        marginBottom: 20,
-        borderRadius: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderColor: '#808080',
-        borderWidth: 1,
-        shadowColor: "#FE2C55",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.2,
-        shadowRadius: 3,
-        elevation: 5,
-    },
-    pressedCard: {
-        backgroundColor: '#1C1C1E',
-        borderColor: '#FFF',
-    },
-    cardTitle: {
-        fontSize: 18,
-        color: '#FFF',
-    },
-    cardImage: {
-      width: 100, // Adjust the width as needed
-      height: 100, // Adjust the height as needed
-      resizeMode: 'cover', // You can use 'cover', 'contain', or other resizeMode options
-    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
 });
 
 export default Products;

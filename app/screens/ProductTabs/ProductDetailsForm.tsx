@@ -7,7 +7,7 @@ import { FIREBASE_DB, FIREBASE_STORAGE } from '../../../FirebaseConfig';
 import { RootStackParamList } from '../../../App';
 import { ImageLibraryOptions, launchImageLibrary } from 'react-native-image-picker';
 import * as ImagePicker from 'expo-image-picker';
-
+import { MaterialIcons } from '@expo/vector-icons';
 
 type ProductDetailsFormProps = NativeStackScreenProps<RootStackParamList, 'ProductDetailsForm'>;
 
@@ -17,6 +17,9 @@ const ProductDetailsForm: React.FC<ProductDetailsFormProps> = ({ route }) => {
   const [images, setImages] = useState<string[]>([]);
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
+  const [dimensions, setDimensions] = useState("");
+  const [weight, setWeight] = useState("");
+  const [quantity, setQuantity] = useState("");
 
   const pickImage = async (index: number) => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -45,13 +48,14 @@ const ProductDetailsForm: React.FC<ProductDetailsFormProps> = ({ route }) => {
     }
   };
 
-
-
   const handleSubmit = async () => {
     const productData = {
       imageUrls: images,
       price: parseFloat(price),
-      description
+      description,
+      dimensions,
+      weight: parseFloat(weight),
+      quantity: parseInt(quantity),
     };
 
     const productRef = ref(FIREBASE_DB, `products/${productName}/details`);
@@ -61,11 +65,17 @@ const ProductDetailsForm: React.FC<ProductDetailsFormProps> = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <Text>Enter Product Details</Text>
-      <Button title="Pick Image 1" onPress={() => pickImage(0)} />
-      {images[0] && <Text>Image 1 uploaded</Text>}
-      <Button title="Pick Image 2" onPress={() => pickImage(1)} />
-      {images[1] && <Text>Image 2 uploaded</Text>}
+      <Text style={styles.title}>Enter Product Details</Text>
+      <View style={styles.iconContainer}>
+        <MaterialIcons name="image" size={24} color="white" />
+        <Button title="Pick Image 1" onPress={() => pickImage(0)} />
+        {images[0] && <Text style={styles.uploadedText}>Image 1 uploaded</Text>}
+      </View>
+      <View style={styles.iconContainer}>
+        <MaterialIcons name="image" size={24} color="white" />
+        <Button title="Pick Image 2" onPress={() => pickImage(1)} />
+        {images[1] && <Text style={styles.uploadedText}>Image 2 uploaded</Text>}
+      </View>
       <TextInput
         style={styles.input}
         placeholder="Price"
@@ -79,6 +89,26 @@ const ProductDetailsForm: React.FC<ProductDetailsFormProps> = ({ route }) => {
         value={description}
         onChangeText={setDescription}
       />
+      <TextInput
+        style={styles.input}
+        placeholder="Dimensions"
+        value={dimensions}
+        onChangeText={setDimensions}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Weight"
+        keyboardType="numeric"
+        value={weight}
+        onChangeText={setWeight}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Quantity Available"
+        keyboardType="numeric"
+        value={quantity}
+        onChangeText={setQuantity}
+      />
       <Button title="Submit" onPress={handleSubmit} />
     </View>
   );
@@ -88,14 +118,31 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 15,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    backgroundColor: 'black',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 20,
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  uploadedText: {
+    color: 'white',
+    marginLeft: 10,
   },
   input: {
     borderWidth: 1,
     borderColor: '#ddd',
     padding: 10,
-    marginBottom: 10
-  }
+    marginBottom: 10,
+    backgroundColor: 'white',
+  },
 });
 
 export default ProductDetailsForm;
