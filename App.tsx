@@ -22,6 +22,7 @@ export type RootStackParamList = {
     ProductDetailsForm: { productName?: string };
     TikTokForm: { productName?: string };  // added this line
     ReviewForm: { productName: string };
+    Profile: undefined;
 };
 
 

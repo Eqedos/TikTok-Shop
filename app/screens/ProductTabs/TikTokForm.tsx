@@ -50,6 +50,17 @@ const TikTokForm: React.FC<TikTokFormProps> = ({ route }) => {
   };
 
   const handleSubmit = async () => {
+    if (commentsInput.trim() === '') {
+      Alert.alert(
+        'Empty Comments',
+        'Please enter at least one comment before submitting.',
+        [
+          { text: 'OK', onPress: () => console.log('OK Pressed') }
+        ]
+      );
+      return;
+    }
+
     const commentsArray = commentsInput.split(',')
                                        .map(comment => comment.trim())
                                        .filter(comment => comment) // remove any empty strings after trimming
@@ -92,6 +103,10 @@ const TikTokForm: React.FC<TikTokFormProps> = ({ route }) => {
         value={commentsInput}
         onChangeText={setCommentsInput}
       />
+
+      {commentsInput.trim() === '' && (
+        <Text style={styles.errorText}>Please enter at least one comment before submitting.</Text>
+      )}
 
       <View style={styles.iconRow}>
         <MaterialCommunityIcons name="video" size={40} color="#fff" onPress={pickVideo} />
@@ -138,6 +153,10 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginBottom: 20,
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
   },
   iconText: {
     color: '#fff',
