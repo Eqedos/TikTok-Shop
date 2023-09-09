@@ -31,6 +31,7 @@ const Reviews: React.FC<ReviewsProps> = ({ productName }) => {
   const navigateToReviewForm = () => {
     navigation.navigate('ReviewForm', { productName });
   };
+  
 
   const handleLike = (review: any) => {
     const reviewRef = sref(FIREBASE_DB, `products/${productName}/reviews/${review.id}`); // Use id instead of key
@@ -91,8 +92,10 @@ const Reviews: React.FC<ReviewsProps> = ({ productName }) => {
             </View>
           </View>
         ))}
-        <Button title="Add Review" onPress={navigateToReviewForm} />
       </View>
+      <TouchableOpacity style={styles.addButton} onPress={navigateToReviewForm}>
+        <Icon name="plus" size={20} color="black" />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -149,6 +152,17 @@ const styles = StyleSheet.create({
   },
   likeCount: {
     marginLeft: 5,
+  },
+  addButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

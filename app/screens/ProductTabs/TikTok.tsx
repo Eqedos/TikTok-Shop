@@ -32,6 +32,45 @@ const styles = StyleSheet.create({
   commentButton: {
     marginBottom: 10,
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'space-between',
+},
+commentItem: {
+    flexDirection: 'row',
+    padding: 10,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#ccc',
+},
+commentUser: {
+    fontWeight: 'bold',
+    marginRight: 10,
+},
+commentInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    borderTopWidth: 0.5,
+    borderTopColor: '#ccc',
+    backgroundColor: 'white',
+},
+commentInput: {
+    flex: 1,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 20,
+    padding: 10,
+    marginRight: 10,
+},
+postButton: {
+    backgroundColor: '#007BFF',
+    borderRadius: 20,
+    padding: 10,
+    paddingHorizontal: 20,
+},
+postButtonText: {
+    color: 'white',
+},
 });
 interface TikTokProps {
   productName: string;
@@ -56,7 +95,7 @@ const TikTok: React.FC<TikTokProps> = ({ productName }) => {
   const [newComment, setNewComment] = useState<string>("");
   const [isVideoPlaying, setIsVideoPlaying] = useState<boolean>(false);
   const [visibleVideoIndex, setVisibleVideoIndex] = useState<number | null>(null);
-
+  const [likedVideos, setLikedVideos] = useState<{[key: string]: boolean}>({});
   const videoRef = useRef<Video>(null);
 
   useEffect(() => {
@@ -77,10 +116,20 @@ const TikTok: React.FC<TikTokProps> = ({ productName }) => {
 
   const handleLike = (index: number) => {
     const updatedTiktoks = [...tiktoks];
-    updatedTiktoks[index].likes += 1;
-    const specificVideoRef = ref(FIREBASE_DB, `products/${productName}/tiktoks/${updatedTiktoks[index].id}`);
-    set(specificVideoRef, updatedTiktoks[index]);
+    const video = updatedTiktoks[index];
+    const isLiked = likedVideos[video.id] || false;
+
+    if (isLiked) {
+      video.likes -= 1;
+    } else {
+      video.likes += 1;
+    }
+
+    const specificVideoRef = ref(FIREBASE_DB, `products/${productName}/tiktoks/${video.id}`);
+    set(specificVideoRef, video);
     setTiktoks(updatedTiktoks);
+
+    setLikedVideos(prevState => ({ ...prevState, [video.id]: !isLiked }));
   };
 
   const handleCommentsClick = (id: string, comments: Array<{ user: string, text: string }>) => {
@@ -119,27 +168,35 @@ const TikTok: React.FC<TikTokProps> = ({ productName }) => {
 
   const renderCommentSection = () => (
     <Modal
-      visible={showComments}
-      onRequestClose={() => setShowComments(false)}
-      animationType="slide"
+        visible={showComments}
+        onRequestClose={() => setShowComments(false)}
+        animationType="slide"
     >
-      <FlatList
-        data={selectedVideoComments}
-        renderItem={({ item }) => (
-          <Text>{item.user}: {item.text}</Text>
-        )}
-        keyExtractor={(item, index) => index.toString()}
-      />
-      <TextInput
-        value={newComment}
-        onChangeText={setNewComment}
-        placeholder="Add a comment..."
-        style={{ borderColor: 'gray', borderWidth: 1, margin: 10, padding: 5 }}
-      />
-      <Button title="Post Comment" onPress={handlePostComment} />
-      <Button title="Close" onPress={() => setShowComments(false)} />
+        <View style={styles.modalContainer}>
+            <FlatList
+                data={selectedVideoComments}
+                renderItem={({ item }) => (
+                    <View style={styles.commentItem}>
+                        <Text style={styles.commentUser}>{item.user}:</Text>
+                        <Text>{item.text}</Text>
+                    </View>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+            />
+            <View style={styles.commentInputContainer}>
+                <TextInput
+                    value={newComment}
+                    onChangeText={setNewComment}
+                    placeholder="Add a comment..."
+                    style={styles.commentInput}
+                />
+                <TouchableOpacity style={styles.postButton} onPress={handlePostComment}>
+                    <Text style={styles.postButtonText}>Post</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
     </Modal>
-  );
+);
 
   return (
     <View style={{ flex: 1 }}>
@@ -161,7 +218,7 @@ const TikTok: React.FC<TikTokProps> = ({ productName }) => {
             </TouchableOpacity>
                   <View style={{ position: 'absolute', top: '50%', right: 0, transform: [{ translateY: -50 }] }}>
                   <TouchableOpacity onPress={() => handleLike(index)} style={{ alignItems: 'center', padding: 5, borderRadius: 5, shadowColor: 'black', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 2, elevation: 2, borderWidth: 0, borderColor: 'transparent' }}>
-                    <FontAwesome name="heart" size={30} color="white" style={{ textShadowColor: 'black', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 1 }} />
+                    <FontAwesome name={likedVideos[item.id] ? "heart" : "heart-o"} size={30} color="white" style={{ textShadowColor: 'black', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 1 }} />
                     <Text style={{ color: 'white', backgroundColor: 'black', marginTop: 5, paddingHorizontal: 5, borderRadius: 5 }}>{item.likes}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => handleCommentsClick(item.id, item.comments)} style={{ alignItems: 'center', marginTop: 10, padding: 5, borderRadius: 5, shadowColor: 'black', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 2, elevation: 2, borderWidth: 0, borderColor: 'transparent' }}>
