@@ -5,12 +5,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB2sResCqLl4jg4Blv2KBHrB4pnhG99e84",
-  authDomain: "tiktokshop2-61a3f.firebaseapp.com",
-  projectId: "tiktokshop2-61a3f",
-  storageBucket: "tiktokshop2-61a3f.appspot.com",
-  messagingSenderId: "937531028712",
-  appId: "1:937531028712:web:4a56fa72eda4124408455d"
+  apiKey: "AIzaSyCcCVuuaRPGJwIQKfyHVWvMmNtgDZ7n464",
+  authDomain: "tiktokshop3-5dd49.firebaseapp.com",
+  projectId: "tiktokshop3-5dd49",
+  storageBucket: "tiktokshop3-5dd49.appspot.com",
+  messagingSenderId: "227988780653",
+  appId: "1:227988780653:web:bc8df1cbca31455ff3b164"
 };
 
 export const FIREBASE_APP = initializeApp(firebaseConfig);
