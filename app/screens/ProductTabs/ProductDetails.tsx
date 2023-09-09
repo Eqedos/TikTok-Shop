@@ -251,10 +251,6 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ productName }) => {
           fadeOut
         />
       )}
-      <Button
-        title="Edit Product Details"
-        onPress={() => navigation.navigate('ProductDetailsForm', { productName })}
-      />
     </View>
   );
   
