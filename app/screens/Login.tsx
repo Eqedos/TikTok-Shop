@@ -26,6 +26,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const navigation = useNavigation<LoginScreenNavigationProp>();
 
@@ -37,6 +38,7 @@ const Login = () => {
       navigation.navigate("Products"); // Navigate to Products screen
     } catch (error) {
       console.error("Error signing in:", error);
+      setError("Invalid email or password"); // Set the error message
     }
     setLoading(false);
   };
@@ -49,6 +51,7 @@ const Login = () => {
       navigation.navigate("Products"); // Navigate to Products screen
     } catch (error) {
       console.error("Error signing up:", error);
+      setError("Account already exists"); // Set the error message
     }
     setLoading(false);
   };
@@ -92,6 +95,7 @@ const Login = () => {
           </TouchableOpacity>
         </>
       )}
+      {error !== "" && <Text style={styles.errorMessage}>{error}</Text>}
     </View>
   );
 };
@@ -104,13 +108,6 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: "center",
     backgroundColor: "#000",
-  },
-  title: {
-    fontSize: 28,
-    marginBottom: 0,
-    marginVertical: 10,
-    textAlign: "center",
-    color: "#fff",
   },
   input: {
     height: 50,
@@ -168,5 +165,10 @@ const styles = StyleSheet.create({
     width: 175, // Set the desired width of the logo
     height: 175, // Set the desired height of the logo
     resizeMode: "contain", // Adjust the resizeMode as needed
+  },
+  errorMessage: {
+    color: "red",
+    fontSize: 16,
+    marginTop: 10,
   },
 });
