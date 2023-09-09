@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { ref, push, update, set } from "firebase/database";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { ref, push, set } from "firebase/database";
 import { FIREBASE_DB } from '../../../FirebaseConfig';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../App';
@@ -17,16 +17,13 @@ const ReviewForm: React.FC<ReviewFormProps> = (props) => {
 
   const submitReview = async () => {
     if (author.trim() === '' || text.trim() === '') {
-      alert('Both fields are required!');
+      Alert.alert('Error', 'Both fields are required!');
       return;
     }
 
     const reviewsRef = ref(FIREBASE_DB, `products/${productName}/reviews`);
-    
-    // Generate a new unique key
     const newKey = push(reviewsRef).key;
 
-    // If the new key is null (although unlikely), handle this error gracefully
     if (!newKey) {
       console.error('Failed to generate a new key for the review.');
       return;
@@ -42,11 +39,11 @@ const ReviewForm: React.FC<ReviewFormProps> = (props) => {
       likes: 0
     };
 
-    set(newReviewRef, reviewData); // Use set to add the data to the reference
-};
+    await set(newReviewRef, reviewData); // Use await to ensure the data is added to the reference
 
-  
-  
+    // Display the success message
+    Alert.alert('Success', 'Review added successfully!');
+  };
 
   const renderStars = () => {
     const stars = [];
@@ -67,7 +64,7 @@ const ReviewForm: React.FC<ReviewFormProps> = (props) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Write a review for {productName}</Text>
-      
+
       <TextInput
         style={styles.input}
         placeholder="Author"

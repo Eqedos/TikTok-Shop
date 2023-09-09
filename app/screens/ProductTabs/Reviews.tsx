@@ -77,21 +77,25 @@ const Reviews: React.FC<ReviewsProps> = ({ productName }) => {
         <Text style={styles.headerText}>Reviews for {productName}</Text>
       </View>
       <View style={styles.content}>
-        {reviews.map((review, index) => (
-          <View key={index} style={styles.reviewContainer}>
-            <View style={styles.reviewBox}>
-              <View style={styles.reviewTextContainer}>
-                <Text style={styles.authorText}>Author: {review.author}</Text>
-                <Text style={styles.ratingText}>Rating: {renderStars(review.rating)}</Text>
-                <Text style={styles.reviewText}>Review: {review.text}</Text>
+        {reviews.length === 0 ? (
+          <Text style={styles.noReviewsText}>No reviews available</Text>
+        ) : (
+          reviews.map((review, index) => (
+            <View key={index} style={styles.reviewContainer}>
+              <View style={styles.reviewBox}>
+                <View style={styles.reviewTextContainer}>
+                  <Text style={styles.authorText}>Author: {review.author}</Text>
+                  <Text style={styles.ratingText}>Rating: {renderStars(review.rating)}</Text>
+                  <Text style={styles.reviewText}>Review: {review.text}</Text>
+                </View>
+                <TouchableOpacity style={styles.likeButton} onPress={() => handleLike(review)}>
+                  <Icon name="thumbs-up" size={20} color="gray" />
+                  <Text style={styles.likeCount}>{review.likes}</Text>
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity style={styles.likeButton} onPress={() => handleLike(review)}>
-                <Icon name="thumbs-up" size={20} color="gray" />
-                <Text style={styles.likeCount}>{review.likes}</Text>
-              </TouchableOpacity>
             </View>
-          </View>
-        ))}
+          ))
+        )}
       </View>
       <TouchableOpacity style={styles.addButton} onPress={navigateToReviewForm}>
         <Icon name="plus" size={20} color="black" />
@@ -163,6 +167,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  noReviewsText: {
+    color: 'white',
+    fontSize: 16,
   },
 });
 
