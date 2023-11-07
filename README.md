@@ -10,7 +10,7 @@ Before you start, make sure you have the following software installed on your co
 
 2. **Expo CLI**: Install Expo CLI globally using npm by running the following command in your terminal:
 
-'''npm install -g expo-cli'''
+```npm install -g expo-cli```
 
 
 ### Setup
@@ -22,19 +22,19 @@ Before you start, make sure you have the following software installed on your co
 
 2. **Navigate to the Project Directory**: Change your working directory to the ReelReview project folder:
 
-'''cd TikTok-Shop'''
+```cd TikTok-Shop```
 
 
 3. **Install Dependencies**: Install the project dependencies by running:
 
-'''npm i'''
+```npm i```
 
 
 4. **Set Up Firebase**: Create a Firebase project and set up authentication and Firestore for your project. Replace the Firebase configuration in the code with your own Firebase configuration. You can find the Firebase setup instructions on the [Firebase website](https://firebase.google.com/docs/web/setup).
 
 5. **Start the Development Server**: Start the Expo development server by running:
 
-'''expo start'''
+```expo start```
 
 
 6. **Scan QR Code**: A browser window will open, and you will see a QR code. Use the Expo Go app on your mobile device to scan the QR code, and it will open the app on your device.
