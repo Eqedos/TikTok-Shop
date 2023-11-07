@@ -1,5 +1,7 @@
 # ReelReview App
 
+> **Note**: This project was made for a TikTok hackathon.
+
 
 ReelReview is a mobile application that innovatively integrates with TikTok Shop, offering users a platform to create and share TikTok videos as product reviews. This approach to e-commerce enhances user engagement by allowing genuine and dynamic presentations of user experiences with products. Developed with React Native, TypeScript, and Firebase for a hackathon event, ReelReview stands as a testament to how social media can transform traditional online shopping.
 
